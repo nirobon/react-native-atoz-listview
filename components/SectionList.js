@@ -1,36 +1,20 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { StyleSheet, View, Text } from 'react-native';
+'use strict';
 
+import React, {
+  Component,
+  PropTypes,
+} from 'react';
+import ReactNative, {
+  StyleSheet,
+  View,
+  Text,
+  NativeModules,
+} from 'react-native';
+
+const noop = () => { };
 const returnTrue = () => true;
 
-export default class SectionList extends React.PureComponent {
-  static propTypes = {
-    /**
-     * A component to render for each section item
-     */
-    component: PropTypes.func,
-
-    /**
-     * Function to provide a title the section list items.
-     */
-    getSectionListTitle: PropTypes.func,
-
-    /**
-     * Function to be called upon selecting a section list item
-     */
-    onSectionSelect: PropTypes.func,
-
-    /**
-     * The sections to render
-     */
-    sections: PropTypes.array.isRequired,
-
-    /**
-     * A style to apply to the section list container
-     */
-    style: PropTypes.oneOfType([PropTypes.number, PropTypes.object])
-  };
+export default class SectionList extends Component {
 
   constructor(props, context) {
     super(props, context);
@@ -81,7 +65,7 @@ export default class SectionList extends React.PureComponent {
           width,
           height
         };
-      });
+      })
     }, 0);
   }
 
@@ -89,7 +73,7 @@ export default class SectionList extends React.PureComponent {
     this.fixSectionItemMeasure();
   }
 
-  // fix bug when change data
+  // fix bug when change data 
   componentDidUpdate() {
     this.fixSectionItemMeasure();
   }
@@ -101,31 +85,33 @@ export default class SectionList extends React.PureComponent {
   render() {
     const SectionComponent = this.props.component;
     const sections = this.props.sections.map((section, index) => {
-      const title = this.props.getSectionListTitle
-        ? this.props.getSectionListTitle(section)
-        : section;
+      const title = this.props.getSectionListTitle ?
+        this.props.getSectionListTitle(section) :
+        section;
 
-      const textStyle = this.props.data[section].length ? styles.text : styles.inactivetext;
+      const textStyle = this.props.data[section].length ?
+        styles.text :
+        styles.inactivetext;
 
-      const child = SectionComponent ? (
-        <SectionComponent sectionId={section} title={title} />
-      ) : (
-        <View style={styles.item}>
-          <Text style={[textStyle, this.props.textStyle]}>{title}</Text>
-        </View>
-      );
+      const child = SectionComponent ?
+        <SectionComponent
+          sectionId={section}
+          title={title}
+        /> :
+        <View
+          style={styles.item}>
+          <Text style={[textStyle, {fontFamily:"Montserrat-Regular", marginRight:10}]}>{title}</Text>
+        </View>;
 
       return (
-        <View key={index} ref={`sectionItem${index}`} pointerEvents="none">
+        <View key={index} ref={'sectionItem' + index} pointerEvents="none">
           {child}
         </View>
       );
     });
 
     return (
-      <View
-        ref="view"
-        style={[styles.container, this.props.style]}
+      <View ref="view" style={[styles.container, this.props.style]}
         onStartShouldSetResponder={returnTrue}
         onMoveShouldSetResponder={returnTrue}
         onResponderGrant={this.detectAndScrollToSection}
@@ -137,6 +123,37 @@ export default class SectionList extends React.PureComponent {
     );
   }
 }
+
+SectionList.propTypes = {
+
+  /**
+   * A component to render for each section item
+   */
+  component: PropTypes.func,
+
+  /**
+   * Function to provide a title the section list items.
+   */
+  getSectionListTitle: PropTypes.func,
+
+  /**
+   * Function to be called upon selecting a section list item
+   */
+  onSectionSelect: PropTypes.func,
+
+  /**
+   * The sections to render
+   */
+  sections: PropTypes.array.isRequired,
+
+  /**
+   * A style to apply to the section list container
+   */
+  style: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.object,
+  ])
+};
 
 const styles = StyleSheet.create({
   container: {
