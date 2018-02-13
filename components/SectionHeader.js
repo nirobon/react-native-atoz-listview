@@ -20,7 +20,7 @@ export default class SectionHeader extends Component {
     const SectionComponent = this.props.component;
     const content = SectionComponent ?
       <SectionComponent {...this.props} /> :
-      <Text style={{fontFamily:'Montserrat-Regular',fontSize:22, marginLeft:20, marginTop:20, marginBottom:10}}>{this.props.title}</Text>;
+      <Text style={{fontSize:22, marginLeft:20, marginTop:20, marginBottom:10}}>{this.props.title}</Text>;
     return (
       <View ref="view">
         {content}
